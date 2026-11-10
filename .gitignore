@@ -1,0 +1,8 @@
+#.gitignore
+.venv
+.env
+__pycache__
+.pytest_cache
+data
+results
+reports
