@@ -45,8 +45,16 @@ simple-crypto-backtester/
 
 ### 1. Install Dependencies
 
+Set up virtual environment
+
 ```bash
-pip install -r requirements.txt
+python -m venv ./venv
+source ./venv/bin/activate
+```
+
+Install requirements
+```bash
+python -m pip install -r requirements.txt
 ```
 
 ### 2. Run Instant Zero-Setup Backtest (Bundled Sample Data)
