@@ -25,7 +25,7 @@ A lightweight, dependency-minimal Python backtesting utility for cryptocurrency 
 ## Repository Structure
 
 ```text
-simple-crypto-backtester/
+blockchainli-python-backtester/
 ├── README.md               # Quickstart guide + explanation of lookahead prevention
 ├── LICENSE                 # MIT License
 ├── requirements.txt        # pandas, numpy (minimal dependencies)
@@ -45,16 +45,17 @@ simple-crypto-backtester/
 
 ### 1. Install Dependencies
 
-Set up virtual environment
+Create and activate a virtual environment:
 
 ```bash
-python -m venv ./venv
+python3 -m venv ./venv
 source ./venv/bin/activate
 ```
 
-Install requirements
+Install the required dependencies:
+
 ```bash
-python -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ### 2. Run Instant Zero-Setup Backtest (Bundled Sample Data)
@@ -102,17 +103,17 @@ print(result.summary())
 
 One of the most common pitfalls in public backtesting scripts is **lookahead bias** (peeking into the future):
 
-1. **The Classic Bug**: A strategy calculates an indicator using bar $t$'s closing price (`close[t]`) and immediately executes the buy/sell order at `close[t]`. In live trading, `close[t]` is only known at the exact instant bar $t$ finishes, at which point you can only fill at bar $t+1$'s opening price (`open[t+1]`) or later.
+1. **The Classic Bug**: A strategy calculates an indicator using bar $t$ closing price (`close[t]`) and immediately executes the buy/sell order at `close[t]`. In live trading, `close[t]` is only known at the exact instant bar $t$ finishes, at which point you can only fill at bar $t+1$ opening price (`open[t+1]`) or later.
 2. **Our Execution Model**:
    - At bar $t$, your strategy evaluates indicators using data available up to `close[t]` and emits a desired target state (`signal[t]`).
    - Inside `Backtester.run()`, target signals are shifted forward by one bar (`executable_target = signals.shift(1)`).
    - Consequently, a signal generated at the close of bar $t-1$ is executed at the **open of bar $t$ (`open[t]`)**.
 3. **Adverse Slippage & Fee Deduction**:
-   - **Buy Fills**: Executed at $\text{Fill Price} = \text{open}[t] \times (1 + \text{slippage\_rate})$.
-   - **Sell Fills**: Executed at $\text{Fill Price} = \text{open}[t] \times (1 - \text{slippage\_rate})$.
-   - **Transaction Fees**: Exchange fees ($\text{Notional} \times \text{fee\_rate}$) are deducted from cash on both entry and exit.
+   - **Buy Fills**: Executed at `Fill Price = open[t] * (1 + slippage_rate)`
+   - **Sell Fills**: Executed at `Fill Price = open[t] * (1 - slippage_rate)`
+   - **Transaction Fees**: Exchange fees (`Notional * fee_rate`) are deducted from cash on both entry and exit.
 
-```
+```text
 Bar t-1 Close                 Bar t Open                        Bar t Close
 ─────────────                 ──────────                        ───────────
 Strategy computes             Order fills at:                   Position marked-to-market
